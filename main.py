@@ -3,42 +3,54 @@ import os
 from dotenv import load_dotenv
 from openai import OpenAI
 
-load_dotenv()  # Load .env variables
+# Load environment variables from .env
+load_dotenv()
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+def generate_idea(interests: str):
+    # Load your Gemini key
+    api_key = os.getenv("GEMINI_API_KEY")
+    if not api_key:
+        raise ValueError("Please set GEMINI_API_KEY in your .env file")
 
-def generate_idea(interests: str) -> str:
-    prompt = f"""
-    Generate a creative, feasible AI/ML project idea based on the interests: '{interests}'.
-    Make it suitable for a beginner to intermediate level.
-    Include: 
-    - A short title
-    - 1-2 sentence description
-    - Key technologies (e.g., Python, scikit-learn)
-    - Why it's cool/ useful
-    Keep it under 150 words.
-    """
-    
-    response = client.chat.completions.create(
-        model="gpt-3.5-turbo",  # Swap to gpt-4o for better results if you have access
-        messages=[{"role": "user", "content": prompt}],
-        max_tokens=200,
-        temperature=0.8,
+    # Point to Gemini's OpenAI-compatible endpoint
+    client = OpenAI(
+        api_key=api_key,
+        base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
     )
-    return response.choices[0].message.content.strip()
+
+    # A better prompt for cool AI project ideas
+    prompt = f"""
+    Generate 3 creative and doable AI/ML project ideas based on the interest: "{interests}".
+    For each idea, include:
+    - A catchy title
+    - Short description
+    - Difficulty level (Beginner/Intermediate/Advanced)
+    - Key technologies/libraries to use
+    - Why it's fun or useful
+    
+    Make them inspiring for someone learning AI!
+    """
+
+    response = client.chat.completions.create(
+        model="gemini-1.5-flash",  # Fast, free-tier friendly, and smart! (You can try gemini-1.5-pro later)
+        messages=[
+            {"role": "system", "content": "You are an expert AI project mentor."},
+            {"role": "user", "content": prompt}
+        ],
+        temperature=0.8,
+        max_tokens=1000
+    )
+
+    return response.choices[0].message.content
 
 def main():
-    parser = argparse.ArgumentParser(description="AI Project Idea Generator")
-    parser.add_argument("interests", type=str, help="Your interests (e.g., 'computer vision beginner')")
-    parser.add_argument("--model", type=str, default="gpt-3.5-turbo", help="OpenAI model to use")
+    parser = argparse.ArgumentParser(description="AI Project Idea Generator (Powered by Gemini)")
+    parser.add_argument("interests", type=str, help="Your interests (e.g., 'natural language processing')")
     args = parser.parse_args()
     
-    if not os.getenv("OPENAI_API_KEY"):
-        print("Error: OPENAI_API_KEY not found in .env file!")
-        return
-    
+    print("🤖 Generating awesome project ideas for you...")
     idea = generate_idea(args.interests)
-    print(f"Generated Idea:\n{idea}")
+    print("\n" + idea)
 
 if __name__ == "__main__":
     main()
