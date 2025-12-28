@@ -44,12 +44,17 @@ def generate_idea(interests: str):
 
 def main():
     parser = argparse.ArgumentParser(description="AI Project Idea Generator (Powered by Gemini)")
-    parser.add_argument("interests", type=str, help="Your interests (e.g., 'natural language processing')")
+    parser.add_argument("interests", type=str, nargs="?", default="natural language processing",
+                        help="Your interests (e.g., 'natural language processing') - optional if you want interactive mode")
     args = parser.parse_args()
     
-    print("🤖 Generating awesome project ideas for you...")
-    idea = generate_idea(args.interests)
-    print("\n" + idea)
+    interests = args.interests
+    if not interests:
+        interests = input("What topic are you interested in? (e.g., natural language processing): ").strip()
+    
+    print("🤖 Generating awesome project ideas for you...\n")
+    idea = generate_idea(interests)
+    print(idea)
 
 if __name__ == "__main__":
     main()
