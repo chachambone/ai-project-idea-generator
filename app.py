@@ -11,7 +11,7 @@ load_dotenv()
 st.set_page_config(
     page_title="AI Project Idea Generator ✨",
     page_icon="🤖",
-    layout="centered",
+    layout="wide",
     initial_sidebar_state="collapsed"
 )
 
@@ -43,12 +43,32 @@ st.markdown("""
         transform: scale(1.05);
         box-shadow: 0 6px 20px rgba(255, 105, 194, 0.5);
     }
-    /* Pretty border for the scrollable container */
+    /* Full width magic */
+    .block-container {
+        padding-left: 2rem !important;
+        padding-right: 2rem !important;
+        max-width: 100% !important;
+    }
+    /* Pretty container styling */
     [data-testid="stVerticalBlockBorderWrapper"] {
         border-left: 8px solid #ff6bc2 !important;
         border-radius: 20px;
         box-shadow: 0 8px 25px rgba(255, 105, 194, 0.15);
         background: white;
+        padding: 30px;
+    }
+    /* Text visibility fix */
+    [data-testid="stMarkdownContainer"] p,
+    [data-testid="stMarkdownContainer"] li,
+    [data-testid="stMarkdownContainer"] {
+        color: #333333 !important;
+        font-weight: 500;
+        line-height: 1.6;
+        font-size: 16px;
+    }
+    [data-testid="stMarkdownContainer"] strong,
+    [data-testid="stMarkdownContainer"] b {
+        color: #ff6bc2 !important;
     }
 </style>
 """, unsafe_allow_html=True)
