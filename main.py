@@ -2,6 +2,7 @@ import argparse
 import os
 from dotenv import load_dotenv
 from openai import OpenAI
+import textwrap  # For nice wrapped output
 
 # Load environment variables from .env
 load_dotenv()
@@ -11,7 +12,7 @@ def generate_idea(interests: str):
     if not api_key:
         raise ValueError("Please set GEMINI_API_KEY in your .env file")
 
-    # Official Gemini OpenAI-compatible endpoint (with trailing slash)
+    # Correct Gemini OpenAI-compatible endpoint (no trailing slash needed in latest examples)
     client = OpenAI(
         api_key=api_key,
         base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
@@ -26,14 +27,13 @@ def generate_idea(interests: str):
     - Key technologies/libraries to use
     - Why it's fun or useful
     
-    Make them inspiring for someone learning AI!
+    Make them super inspiring and exciting for someone learning AI!
     """
 
     response = client.chat.completions.create(
-        model="gemini-2.5-flash",  # Latest fast model - perfect for this!
-        # If you want even smarter ideas: try "gemini-2.5-pro" (might hit free limits faster)
+        model="gemini-2.5-flash",  # Current stable fast model (Dec 2025)
         messages=[
-            {"role": "system", "content": "You are an expert AI project mentor full of enthusiasm."},
+            {"role": "system", "content": "You are a bubbly, enthusiastic AI project mentor who loves helping people build cool things!"},
             {"role": "user", "content": prompt}
         ],
         temperature=0.9,
@@ -51,10 +51,14 @@ def main():
     interests = args.interests
     if not interests:
         interests = input("What topic are you interested in? (e.g., natural language processing): ").strip()
+        if not interests:
+            interests = "natural language processing"  # fallback
     
     print("🤖 Generating awesome project ideas for you...\n")
     idea = generate_idea(interests)
-    print(idea)
+    
+    # Nice formatted output that won't get cut off weirdly
+    print(textwrap.fill(idea, width=100))
 
 if __name__ == "__main__":
     main()
