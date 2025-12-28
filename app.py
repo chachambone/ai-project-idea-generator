@@ -2,7 +2,7 @@ import streamlit as st
 import os
 from dotenv import load_dotenv
 from openai import OpenAI
-import streamlit_confetti as confetti  # Make sure you have: pip install streamlit-confetti
+
 
 # Load environment variables
 load_dotenv()
@@ -12,7 +12,7 @@ st.set_page_config(
     page_title="AI Project Idea Generator ✨",
     page_icon="🤖",
     layout="wide",
-    initial_sidebar_state="collapsed"
+    initial_sidebar_state="expanded"
 )
 
 # Custom CSS for ultimate cuteness
@@ -73,11 +73,28 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+# === CUTE SIDEBAR ===
+with st.sidebar:
+    st.image("https://em-content.zobj.net/source/apple/391/robot_1f916.png", width=100)
+    st.markdown("### ✨ Customize Your Magic!")
+    
+    num_ideas = st.slider("Number of ideas", 1, 10, 3)
+    
+    difficulty = st.selectbox(
+        "Difficulty level",
+        ["Any", "Beginner", "Intermediate", "Advanced"]
+    )
+    
+    st.markdown("---")
+    st.markdown("**Tips:**")
+    st.caption("🌸 Try 'AI art', 'games', 'health', 'environment'")
+    st.caption("🎀 Use the slider for more inspiration!")
+    st.caption("Made with 💖 by Chacha")
+
 # Title & subtitle
 st.title("🤖 AI Project Idea Generator ✨")
 st.markdown("<p style='text-align: center; color: #aa77aa;'>Your personal AI mentor for fun & creative project ideas!</p>", unsafe_allow_html=True)
 
-# User input
 interests = st.text_input(
     "What are you interested in? 🌟",
     placeholder="e.g., business ideas, restaurant tech, games, art, robots...",
@@ -109,33 +126,38 @@ if st.button("Generate Magical Ideas! 🎀", use_container_width=True):
                 - Key technologies/libraries to use
                 - Why it's fun or useful
 
-                Make them super inspiring and exciting for someone learning AI!
+                Jump straight to the ideas. Make them inspiring and exciting!{difficulty_prompt}
                 """
 
                 response = client.chat.completions.create(
                     model="gemini-2.5-flash",
                     messages=[
-                        {"role": "system", "content": "You are a bubbly, enthusiastic AI project mentor who loves helping people build cool things!"},
+                        {"role": "system", "content": "You are an enthusiastic AI project mentor. Jump straight into generating the ideas without long introductions."},
                         {"role": "user", "content": prompt}
                     ],
                     temperature=0.9,
-                    max_tokens=1200
+                    max_tokens=2000
                 )
 
                 ideas = response.choices[0].message.content
 
                 st.success("Here are your sparkling project ideas! 🎉")
 
-                # CONFETTI EXPLOSION!!!
-                confetti.cannon(
-                    particleCount=200,
-                    spread=70,
-                    startVelocity=45,
-                    colors=['#ff6bc2', '#c5a3ff', '#ffeef8', '#ff9ecf']
-                )
+                # CUSTOM RAINBOW CONFETTI (Best & Reliable!)
+                st.markdown("""
+                <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+                <script>
+                    confetti({
+                        particleCount: 300,
+                        spread: 100,
+                        origin: { y: 0.6 },
+                        colors: ['#ff6bc2', '#c5a3ff', '#ffeef8', '#ff9ecf', '#a8e6cf', '#ffd93d']
+                    });
+                </script>
+                """, unsafe_allow_html=True)
 
-                # PERFECT SCROLLABLE BOX - this is the magic fix!
-                with st.container(height=700, border=True):
+                # Scrollable ideas box
+                with st.container(height=1200, border=True):
                     st.markdown(ideas)
 
             except Exception as e:
@@ -143,4 +165,4 @@ if st.button("Generate Magical Ideas! 🎀", use_container_width=True):
                 st.info("Check your GEMINI_API_KEY and internet connection! 🌐")
 
 # Footer
-st.markdown("<p style='text-align: center; color: #cc99cc; margin-top: 80px;'>Made with 💕 by Chacha & Grok</p>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: #cc99cc; margin-top: 80px;'>Made with 💖 by Chacha </p>", unsafe_allow_html=True)
