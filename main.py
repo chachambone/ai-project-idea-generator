@@ -7,18 +7,16 @@ from openai import OpenAI
 load_dotenv()
 
 def generate_idea(interests: str):
-    # Load your Gemini key
     api_key = os.getenv("GEMINI_API_KEY")
     if not api_key:
         raise ValueError("Please set GEMINI_API_KEY in your .env file")
 
-    # Point to Gemini's OpenAI-compatible endpoint
+    # Official Gemini OpenAI-compatible endpoint
     client = OpenAI(
         api_key=api_key,
         base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
     )
 
-    # A better prompt for cool AI project ideas
     prompt = f"""
     Generate 3 creative and doable AI/ML project ideas based on the interest: "{interests}".
     For each idea, include:
@@ -32,12 +30,13 @@ def generate_idea(interests: str):
     """
 
     response = client.chat.completions.create(
-        model="gemini-1.5-flash",  # Fast, free-tier friendly, and smart! (You can try gemini-1.5-pro later)
+        model="gemini-1.5-flash-latest",  # Latest fast model (free tier friendly)
+        # Try "gemini-1.5-pro-latest" if you want smarter ideas (might hit limits faster)
         messages=[
-            {"role": "system", "content": "You are an expert AI project mentor."},
+            {"role": "system", "content": "You are an expert AI project mentor full of enthusiasm."},
             {"role": "user", "content": prompt}
         ],
-        temperature=0.8,
+        temperature=0.9,
         max_tokens=1000
     )
 
