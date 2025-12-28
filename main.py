@@ -11,7 +11,7 @@ def generate_idea(interests: str):
     if not api_key:
         raise ValueError("Please set GEMINI_API_KEY in your .env file")
 
-    # Official Gemini OpenAI-compatible endpoint
+    # Official Gemini OpenAI-compatible endpoint (with trailing slash)
     client = OpenAI(
         api_key=api_key,
         base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
@@ -30,8 +30,8 @@ def generate_idea(interests: str):
     """
 
     response = client.chat.completions.create(
-        model="gemini-1.5-flash-latest",  # Latest fast model (free tier friendly)
-        # Try "gemini-1.5-pro-latest" if you want smarter ideas (might hit limits faster)
+        model="gemini-2.5-flash",  # Latest fast model - perfect for this!
+        # If you want even smarter ideas: try "gemini-2.5-pro" (might hit free limits faster)
         messages=[
             {"role": "system", "content": "You are an expert AI project mentor full of enthusiasm."},
             {"role": "user", "content": prompt}
